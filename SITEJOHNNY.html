@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA DE ENSINO TI - ETE EDUARDO CAMPOS</title>
+    <style>
+        :root {
+            --neon-blue: #00d9ff;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --neon-yellow: #f4ea00;
+            --glass: rgba(0, 25, 50, 0.8);
+        }
+
+        /* --- ESTILO DA CAPA INICIAL --- */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000 url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center/cover;
+            z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; transition: 0.8s;
+        }
+        #splash-screen::before {
+            content: ""; position: absolute; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: -1;
+        }
+        .start-btn {
+            background: transparent; border: 3px solid var(--neon-blue); color: var(--neon-blue);
+            padding: 20px 50px; font-size: 1.5rem; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 5px; box-shadow: 0 0 20px var(--neon-blue);
+            transition: 0.3s; margin-top: 30px;
+        }
+        .start-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 50px var(--neon-blue); }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #000 url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center/cover;
+            color: #fff; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+
+        .main-app {
+            position: relative; z-index: 1; width: 98vw; height: 95vh;
+            display: grid; grid-template-columns: 1fr 380px; 
+            grid-template-rows: 1fr 100px; gap: 15px;
+            visibility: hidden;
+        }
+
+        .hud-panel {
+            background: var(--glass); border: 1px solid var(--neon-blue); border-radius: 5px;
+            box-shadow: inset 0 0 15px rgba(0, 217, 255, 0.2); backdrop-filter: blur(10px);
+            padding: 20px; overflow-y: auto;
+        }
+
+        #display-screen { grid-column: 1 / 2; grid-row: 1 / 2; border-left: 4px solid var(--neon-blue); }
+        h2 { color: var(--neon-blue); text-transform: uppercase; margin-top: 0; text-shadow: 0 0 10px var(--neon-blue); }
+        .content-item { background: rgba(0, 217, 255, 0.05); border-left: 3px solid var(--neon-blue); padding: 15px; margin-bottom: 10px; font-size: 1.1rem; }
+        .btn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 5px; }
+        .nav-btn { background: transparent; border: 1px solid rgba(0, 217, 255, 0.4); color: #fff; padding: 8px 0; cursor: pointer; font-size: 0.8rem; }
+        .nav-btn.active { background: var(--neon-blue); color: #000; }
+        .prova-btn { background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green); width: 100%; padding: 10px; margin: 10px 0; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .prova-btn:hover { background: var(--neon-green); color: #000; }
+        .footer-controls { grid-column: 1 / 3; grid-row: 2 / 3; display: flex; justify-content: space-between; align-items: center; }
+        .q-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; margin: 15px 0; }
+        .q-btn { padding: 10px; border: 1px solid var(--neon-blue); background: rgba(0,0,0,0.5); color: white; cursor: pointer; }
+        .q-btn.answered { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        .option-btn { display: block; width: 100%; text-align: left; padding: 12px; margin: 8px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--neon-blue); color: white; cursor: pointer; }
+        .option-btn.selected { background: var(--neon-blue); color: black; font-weight: bold; }
+        .laser-btn { background: transparent; border: 2px solid var(--neon-red); color: var(--neon-red); padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        .final-btn { background: var(--neon-red); color: white; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px var(--neon-red); }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <h1 style="color: var(--neon-blue); font-size: 3.5rem; text-shadow: 0 0 20px var(--neon-blue); margin: 0;">ETE GOVERNADOR EDUARDO CAMPOS</h1>
+        <h2 style="color: #fff; letter-spacing: 10px;">SISTEMA DE ENSINO TI</h2>
+        <h2 style="color: #fff; letter-spacing: 8px;"> Prof.Johnny Lira </h2>
+        <button class="start-btn" onclick="startApp()">Clique aqui para começar</button>
+    </div>
+
+    <div class="main-app" id="main-interface">
+        <div id="display-screen" class="hud-panel"></div>
+
+        <div class="nav-sidebar hud-panel">
+            <h3 style="text-align: center; color: var(--neon-blue); margin: 0 0 10px 0;">TERMINAL</h3>
+            <div style="font-size: 0.7rem; color: var(--neon-blue);">BLOCO 1: FUNDAMENTOS</div>
+            <div class="btn-grid" id="grid-1"></div>
+            <button class="prova-btn" onclick="startQuiz(1)">PROVA BLOCO 1</button>
+            <div style="font-size: 0.7rem; color: var(--neon-blue);">BLOCO 2: ÉTICA</div>
+            <div class="btn-grid" id="grid-2"></div>
+            <button class="prova-btn" onclick="startQuiz(2)">PROVA BLOCO 2</button>
+            <div style="font-size: 0.7rem; color: var(--neon-blue);">BLOCO 3: FUTURO</div>
+            <div class="btn-grid" id="grid-3"></div>
+            <button class="prova-btn" onclick="startQuiz(3)">PROVA BLOCO 3</button>
+        </div>
+
+        <div class="footer-controls hud-panel">
+            <div id="progress-info" style="color: var(--neon-blue);">AGUARDANDO COMANDO...</div>
+            <button class="final-btn" onclick="adminLogin()">⚡ PROVA GERAL (SENHA) ⚡</button>
+            <div>
+                <button class="laser-btn" onclick="prev()" style="border-color:#fff; color:#fff;">VOLTAR</button>
+                <button class="laser-btn" onclick="next()" style="margin-left:10px; border-color:var(--neon-blue); color:var(--neon-blue);">PRÓXIMO</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startApp() {
+            document.getElementById('splash-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                document.getElementById('main-interface').style.visibility = 'visible';
+                render();
+            }, 800);
+        }
+
+        const slides = [
+            { title: "Letramento Digital", content: ["Bem-vindo ao sistema de avaliação da ETE Eduardo Campos.","Use o terminal lateral para navegar ou inicie as provas de cada bloco."], isCapa: true },
+            { title: "01. Definição de TI", content: ["TI é o uso de hardware e software para gerenciar informação.", "Essencial para a economia moderna e o Porto Digital."] },
+            { title: "02. Dados vs Informação", content: ["Dados são brutos.", "Informação é o dado com contexto útil."] },
+            { title: "03. Peopleware", content: ["O elemento humano que opera e cria a tecnologia."] },
+            { title: "04. Hardware", content: ["Peças físicas: CPU, RAM, Placa-mãe."] },
+            { title: "05. Memória RAM", content: ["Memória volátil de curto prazo para execução de programas."] },
+            { title: "06. Software", content: ["Instruções lógicas (Sistemas Operacionais e Apps)."] },
+            { title: "07. Código Aberto", content: ["Software com código livre para estudo (Ex: Linux)."] },
+            { title: "08. Internet e HTTP", content: ["Regras de comunicação na web. HTTPS é a versão segura."] },
+            { title: "09. DNS", content: ["Traduz nomes (sites) para endereços IP (números)."] },
+            { title: "10. Cloud Computing", content: ["Uso de servidores remotos via internet."] },
+            { title: "11. Netiqueta", content: ["Boas maneiras na internet para convivência ética."] },
+            { title: "12. Crimes Digitais", content: ["Invasões e roubos de dados são crimes previstos em lei."] },
+            { title: "13. Segurança de Senhas", content: ["Uso de caracteres diversos e autenticação em duas etapas."] },
+            { title: "14. Backup", content: ["Cópia de segurança para evitar perda de dados."] },
+            { title: "15. Plágio", content: ["Uso de obra alheia sem crédito é crime e antiético."] },
+            { title: "16. Colaboração Google", content: ["Trabalho em tempo real no Docs e Sheets."] },
+            { title: "17. Planilhas", content: ["Organização de dados e cálculos automáticos."] },
+            { title: "18. E-mail Institucional", content: ["Uso profissional da identidade estudantil."] },
+            { title: "19. Apresentações", content: ["Slides como suporte visual, não para leitura total."] },
+            { title: "20. PDF", content: ["Formato que preserva a formatação em qualquer tela."] },
+            { title: "21. IA", content: ["Sistemas que simulam inteligência humana."] },
+            { title: "22. IoT", content: ["Objetos do dia a dia conectados à rede."] },
+            { title: "23. Realidade Virtual", content: ["Imersão em ambientes 100% digitais."] },
+            { title: "24. Big Data", content: ["Análise de grandes volumes de dados."] },
+            { title: "25. Cibersegurança", content: ["Proteção ativa de sistemas contra ataques."] },
+            { title: "26. Algoritmos", content: ["Sequência de passos que define o que vemos na rede."] },
+            { title: "27. Sustentabilidade", content: ["Descarte correto do lixo eletrônico."] },
+            { title: "28. Trabalho Remoto", content: ["Uso de tecnologia para trabalhar fora do escritório."] },
+            { title: "29. Blockchain", content: ["Registro seguro e descentralizado de transações."] },
+            { title: "30. Futuro da Educação", content: ["Ensino híbrido e autonomia do estudante."] }
+        ];
+
+        const bank = {
+            1: [
+                { q: "O que significa a sigla TI?", a: "a", options: { a: "Tecnologia da Informação", b: "Técnica de Internet", c: "Transmissão Interna", d: "Terminal de Informática", e: "Tecnologia Interativa" } },
+                { q: "Qual o componente principal que processa dados no PC?", a: "b", options: { a: "HD", b: "CPU", c: "RAM", d: "Fonte", e: "Monitor" } },
+                { q: "O que são 'Dados' na informática?", a: "c", options: { a: "Informação pronta", b: "Relatórios", c: "Fatos brutos sem contexto", d: "Gráficos", e: "Softwares" } },
+                { q: "O termo 'Peopleware' refere-se a:", a: "d", options: { a: "Peças de metal", b: "Sistemas operacionais", c: "Cabos de rede", d: "Pessoas que usam a TI", e: "Vírus de computador" } },
+                { q: "Qual a função da Memória RAM?", a: "a", options: { a: "Armazenamento temporário de execução", b: "Guardar fotos para sempre", c: "Dar energia ao PC", d: "Processar o vídeo", e: "Conectar à internet" } },
+                { q: "Exemplo de Hardware:", a: "e", options: { a: "Windows", b: "Facebook", c: "WhatsApp", d: "Google Chrome", e: "Placa-mãe" } },
+                { q: "O que é um Software?", a: "b", options: { a: "Parte física", b: "Parte lógica (programas)", c: "Um cabo de força", d: "O gabinete", e: "O mouse" } },
+                { q: "O sistema Linux é conhecido por ser:", a: "c", options: { a: "Pago e caro", b: "Apenas para jogos", c: "Código Aberto (Open Source)", d: "Propriedade da Microsoft", e: "Um hardware" } },
+                { q: "O que o DNS faz na internet?", a: "d", options: { a: "Aumenta a velocidade", b: "Cria sites", c: "Limpa vírus", d: "Traduz nomes de domínios para IPs", e: "Troca a senha do Wi-Fi" } },
+                { q: "Qual a função do protocolo HTTPS?", a: "a", options: { a: "Navegação segura criptografada", b: "Enviar e-mails", c: "Baixar músicas", d: "Apenas ver fotos", e: "Desligar o roteador" } },
+                { q: "O que define a Cloud Computing?", a: "b", options: { a: "Hardware local", b: "Uso de servidores remotos via internet", c: "Computadores movidos a vapor", d: "Uso sem internet", e: "Apenas envio de SMS" } },
+                { q: "Qual peça armazena dados permanentemente?", a: "c", options: { a: "RAM", b: "CPU", c: "HD / SSD", d: "Cooler", e: "Estabilizador" } },
+                { q: "O que é um Periférico de Entrada?", a: "d", options: { a: "Monitor", b: "Impressora", c: "Caixa de som", d: "Teclado", e: "Projetor" } },
+                { q: "Um Bit é:", a: "a", options: { a: "A menor unidade de dado (0 ou 1)", b: "Um conjunto de 1000 arquivos", c: "O nome de um processador", d: "Uma marca de monitor", e: "O mesmo que um Terabyte" } },
+                { q: "O que é um Sistema Operacional?", a: "b", options: { a: "Um jogo", b: "Software que gerencia o hardware", c: "Um tipo de teclado", d: "Um site de buscas", e: "Um editor de fotos" } },
+                { q: "Qual empresa criou o Windows?", a: "c", options: { a: "Apple", b: "Google", c: "Microsoft", d: "Linux Foundation", e: "Samsung" } },
+                { q: "O que é um Navegador (Browser)?", a: "d", options: { a: "Um cabo de rede", b: "Onde se guarda o HD", c: "O sistema do banco", d: "Programa para acessar a Web", e: "Um tipo de impressora" } },
+                { q: "Qual a principal diferença entre SSD e HD?", a: "a", options: { a: "SSD é muito mais rápido", b: "HD não precisa de energia", c: "SSD é mais barato", d: "HD é menor que o SSD", e: "Não há diferença" } },
+                { q: "O que significa 'Download'?", a: "b", options: { a: "Enviar para a nuvem", b: "Baixar arquivos para o PC", c: "Deletar um arquivo", d: "Reiniciar o sistema", e: "Trocar de monitor" } },
+                { q: "Qual unidade mede a memória de armazenamento atual?", a: "c", options: { a: "Graus", b: "Metros", c: "Gigabytes / Terabytes", d: "Watts", e: "Litros" } }
+            ],
+            2: [
+                { q: "O que é Netiqueta?", a: "b", options: { a: "Etiqueta de preço", b: "Conjunto de boas maneiras na web", c: "Nome de um vírus", d: "Marca de roteador", e: "Configuração de rede" } },
+                { q: "Usar a obra de outra pessoa sem dar crédito é:", a: "c", options: { a: "Colaboração", b: "Inovação", c: "Plágio", d: "Resumo", e: "Legal" } },
+                { q: "O que é Phishing?", a: "a", options: { a: "Golpe para roubar dados", b: "Um esporte digital", c: "Atualização de sistema", d: "Tipo de monitor", e: "Conserto de mouse" } },
+                { q: "Qual o benefício da autenticação em dois fatores (2FA)?", a: "d", options: { a: "Deixa a internet rápida", b: "Muda a cor do app", c: "Apaga e-mails antigos", d: "Aumenta drasticamente a segurança", e: "Não serve para nada" } },
+                { q: "O que é um Backup?", a: "b", options: { a: "Um erro no sistema", b: "Cópia de segurança de dados", c: "Excluir arquivos", d: "Um tipo de teclado", e: "Vírus de pendrive" } },
+                { q: "No ambiente profissional, o e-mail deve ser:", a: "e", options: { a: "Cheio de gírias", b: "Apenas com emojis", c: "Ignorado", d: "Anônimo", e: "Claro e formal" } },
+                { q: "O que é Ciberbullying?", a: "a", options: { a: "Assédio ou agressão no meio digital", b: "Um jogo de luta", c: "Comprar computadores", d: "Instalar antivírus", e: "Formatar o PC" } },
+                { q: "As redes sociais impactam a saúde mental?", a: "b", options: { a: "Não, de forma alguma", b: "Sim, podem causar ansiedade e vício", c: "Apenas em quem não tem TI", d: "Só se o PC for velho", e: "Apenas em feriados" } },
+                { q: "O que é a LGPD no Brasil?", a: "c", options: { a: "Lei de Grandes Produtos Digitais", b: "Liga de Games de Pernambuco", c: "Lei Geral de Proteção de Dados", d: "Lista de Games para Download", e: "Logística de Dados" } },
+                { q: "Uma senha segura deve conter:", a: "d", options: { a: "Apenas seu nome", b: "123456", c: "Data de nascimento", d: "Letras, números e símbolos", e: "Apenas espaços" } },
+                { q: "Qual a conduta ética ao ver uma Fake News?", a: "a", options: { a: "Não compartilhar e verificar a fonte", b: "Mandar para todos os grupos", c: "Curtir e comentar", d: "Criar outra fake news", e: "Vender a notícia" } },
+                { q: "O que é 'Pegada Digital'?", a: "b", options: { a: "Marca de dedo no monitor", b: "Rastro de dados que deixamos na rede", c: "Tamanho do mouse", d: "Configuração de IP", e: "Velocidade de digitação" } },
+                { q: "Spam é:", a: "c", options: { a: "Um tipo de arquivo PDF", b: "Um programa de chat", c: "Mensagem indesejada enviada em massa", d: "Um cabo de vídeo", e: "O mesmo que Google" } },
+                { q: "No Google Docs, a colaboração ocorre quando:", a: "d", options: { a: "Você imprime o papel", b: "Você usa sozinho", c: "O computador desliga", d: "Várias pessoas editam ao mesmo tempo", e: "Você envia por correio" } },
+                { q: "O lixo eletrônico deve ser descartado:", a: "e", options: { a: "No lixo comum", b: "No mar", c: "Queimado no quintal", d: "Enterrado", e: "Em pontos de coleta específicos" } },
+                { q: "Direito autoral protege:", a: "a", options: { a: "Criações intelectuais e artísticas", b: "Apenas o hardware", c: "O preço do dólar", d: "A velocidade da internet", e: "As tomadas da casa" } },
+                { q: "Termos de Uso de um App servem para:", a: "b", options: { a: "Serem ignorados", b: "Definir regras entre usuário e empresa", c: "Aumentar o volume do celular", d: "Mudar a senha do Wi-Fi", e: "Apenas enfeite" } },
+                { q: "O que é um 'Hacker Ético'?", a: "c", options: { a: "Alguém que rouba bancos", b: "Um criador de vírus", c: "Profissional que testa segurança legalmente", d: "Alguém que não usa internet", e: "Um vendedor de PCs" } },
+                { q: "Deep Web é:", a: "d", options: { a: "A parte colorida da web", b: "Um site de notícias", c: "O site oficial do governo", d: "Parte da web não indexada por buscadores", e: "Um tipo de cabo de fibra" } },
+                { q: "A ética na TI defende que:", a: "a", options: { a: "A tecnologia deve servir ao bem comum", b: "Lucro é mais importante que privacidade", c: "Dados podem ser roubados livremente", d: "Sistemas não precisam de segurança", e: "Não existem regras" } }
+            ],
+            3: [
+                { q: "O que caracteriza a Inteligência Artificial?", a: "c", options: { a: "Uma máquina que nunca erra", b: "Apenas robôs de metal", c: "Sistemas que aprendem e tomam decisões", d: "Um site de busca comum", e: "Um controle remoto" } },
+                { q: "O que é a Internet das Coisas (IoT)?", a: "a", options: { a: "Objetos do dia a dia conectados à rede", b: "Comprar coisas pela Amazon", c: "O conserto de eletrodomésticos", d: "A internet que só funciona em PCs", e: "Cabos que ligam a TV" } },
+                { q: "Blockchain é a base tecnológica de qual item?", a: "b", options: { a: "E-mail", b: "Criptomoedas (ex: Bitcoin)", c: "Monitor de vídeo", d: "Teclados sem fio", e: "Impressoras 3D" } },
+                { q: "Realidade Aumentada (RA) é:", a: "d", options: { a: "Estar em um mundo 100% digital", b: "Ter um monitor maior", c: "Ver filmes antigos", d: "Sobrepor elementos digitais ao mundo real", e: "Usar óculos escuros" } },
+                { q: "Big Data refere-se a:", a: "a", options: { a: "Análise de volumes imensos de dados", b: "Um computador muito grande", c: "Aumentar a letra do texto", d: "Um HD de 1 Terabyte", e: "Uma rede de supermercados" } },
+                { q: "Qual a função da Impressão 3D?", a: "b", options: { a: "Imprimir fotos coloridas", b: "Criar objetos físicos camada por camada", c: "Scanner de documentos", d: "Imprimir em papel A3", e: "Consertar monitores" } },
+                { q: "O que são Cidades Inteligentes?", a: "c", options: { a: "Cidades onde todos são gênios", b: "Cidades sem tecnologia", c: "Uso de TI para melhorar a gestão urbana", d: "Cidades dentro de jogos", e: "Cidades que não usam luz" } },
+                { q: "O Trabalho Remoto foi impulsionado por:", a: "d", options: { a: "Falta de carros", b: "Fim da internet", c: "Apenas por diversão", d: "Tecnologias de colaboração em nuvem", e: "Papel e caneta" } },
+                { q: "O que é Aprendizado de Máquina (Machine Learning)?", a: "a", options: { a: "Subcampo da IA focado em aprendizado por dados", b: "Ensinar humanos a usar PCs", c: "Lavar a máquina de lavar", d: "Apenas cálculos de Excel", e: "Trocar as peças do PC" } },
+                { q: "A Cibersegurança no futuro foca em:", a: "b", options: { a: "Desligar a internet", b: "Proteção contra ataques complexos e IAs maldosas", c: "Vender antivírus de CD", d: "Aumentar o preço dos PCs", e: "Limpar o teclado" } },
+                { q: "O que é um Assistente Virtual?", a: "c", options: { a: "Um secretário humano", b: "Um vírus", c: "IA que responde comandos (Alexa, Siri)", d: "Um controle de TV", e: "Um mouse sem fio" } },
+                { q: "Qual o impacto da Automação no trabalho?", a: "d", options: { a: "Nenhum impacto", b: "Criação de empregos apenas braçais", c: "Fim de todos os computadores", d: "Substituição de tarefas repetitivas por máquinas", e: "Aumento de feriados" } },
+                { q: "A tecnologia 5G foca em:", a: "a", options: { a: "Altíssima velocidade e baixa latência", b: "Funcionar sem antenas", c: "Ser mais lenta que o 4G", d: "Apenas para chamadas de voz", e: "Funcionar só em rádios" } },
+                { q: "O que é Nanotecnologia?", a: "b", options: { a: "Tecnologia de gigantes", b: "Manipulação da matéria em escala atômica", c: "Um novo tipo de teclado", d: "O Windows 11", e: "A bateria do relógio" } },
+                { q: "Soft Skills na TI são:", a: "c", options: { a: "Habilidades de hardware", b: "Saber programar em C++", c: "Habilidades comportamentais e humanas", d: "Trocar a placa de vídeo", e: "Formatar o HD" } },
+                { q: "Computação Quântica promete:", a: "d", options: { a: "Processadores que esquentam mais", b: "O fim dos jogos", c: "Navegação por satélite antiga", d: "Poder de processamento imensamente superior", e: "Funcionar a base de pilhas" } },
+                { q: "O que é Biometria?", a: "a", options: { a: "Identificação por características físicas (digital, face)", b: "Um exame de sangue digital", c: "Medir o tamanho do PC", d: "Uma marca de tênis", e: "Senha de 4 dígitos" } },
+                { q: "O Futuro da Educação (EdTech) envolve:", a: "b", options: { a: "Apenas livros de papel", b: "Plataformas personalizadas e gamificação", c: "O fim das escolas", d: "Proibir o uso de internet", e: "Voltar a usar máquinas de escrever" } },
+                { q: "O que faz um Algoritmo de Recomendação?", a: "c", options: { a: "Apaga suas fotos", b: "Desliga o celular", c: "Sugere conteúdo baseado no seu perfil", d: "Aumenta o brilho da tela", e: "Limpa o histórico" } },
+                { q: "A Singularidade Tecnológica é o conceito de:", a: "d", options: { a: "Um computador que só faz uma coisa", b: "O fim da energia elétrica", c: "A volta ao passado", d: "IA superando a inteligência humana", e: "Usar apenas um cabo" } }
+            ]
+        };
+
+        let currentIdx = 0;
+        let userAnswers = {};
+        let activeQuizPool = [];
+        const screen = document.getElementById('display-screen');
+
+        function render() {
+            const data = slides[currentIdx];
+            if (!data) return;
+            screen.innerHTML = `<h2>${data.title}</h2><div class="explanation-box">${data.content.map(i => `<div class="content-item">${i}</div>`).join('')}</div>`;
+            updateActiveBtn();
+        }
+
+        function startQuiz(blockNum) {
+            activeQuizPool = blockNum === 'ALL' ? [...bank[1], ...bank[2], ...bank[3]] : bank[blockNum];
+            userAnswers = {};
+            showQuizMap();
+        }
+
+        function showQuizMap() {
+            screen.innerHTML = `<h2>MODO PROVA</h2><div class="q-grid" id="quiz-grid"></div><button class="prova-btn" onclick="finishQuiz()">FINALIZAR</button>`;
+            const grid = document.getElementById('quiz-grid');
+            activeQuizPool.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = `q-btn ${userAnswers[i] ? 'answered' : ''}`;
+                btn.innerText = (i + 1);
+                btn.onclick = () => showQuestion(i);
+                grid.appendChild(btn);
+            });
+        }
+
+        function showQuestion(idx) {
+            const q = activeQuizPool[idx];
+            screen.innerHTML = `<h3>QUESTÃO ${idx+1}</h3><p style="font-size:1.3rem;">${q.q}</p>${Object.entries(q.options).map(([k,v]) => `<button class="option-btn ${userAnswers[idx]===k?'selected':''}" onclick="selectOpt(${idx},'${k}')">${k}) ${v}</button>`).join('')}
+            <div style="display:flex; gap:10px; margin-top:20px;"><button class="prova-btn" style="border-color:#fff" onclick="showQuizMap()">MAPA</button>${idx < activeQuizPool.length-1 ? `<button class="prova-btn" onclick="showQuestion(${idx+1})">PRÓXIMA</button>` : ''}</div>`;
+        }
+
+        function selectOpt(qIdx, opt) { userAnswers[qIdx] = opt; showQuestion(qIdx); }
+
+        function finishQuiz() {
+            let hits = 0;
+            activeQuizPool.forEach((q, i) => { if(userAnswers[i] === q.a) hits++; });
+            screen.innerHTML = `<h1>NOTA FINAL: ${((hits/activeQuizPool.length)*10).toFixed(1)}</h1><p>Acertos: ${hits} de ${activeQuizPool.length}</p><button class="prova-btn" onclick="location.reload()">REINICIAR SISTEMA</button>`;
+        }
+
+        function adminLogin() {
+            if(prompt("SENHA DO PROFESSOR:") === "PROFJOHNNY") startQuiz('ALL');
+        }
+
+        function buildGrids() {
+            for(let i=0; i<30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn'; btn.innerText = (i+1);
+                btn.onclick = () => { currentIdx = i; render(); };
+                btn.id = `btn-${i}`;
+                if(i < 10) document.getElementById('grid-1').appendChild(btn);
+                else if(i < 20) document.getElementById('grid-2').appendChild(btn);
+                else document.getElementById('grid-3').appendChild(btn);
+            }
+        }
+
+        function updateActiveBtn() {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if(document.getElementById(`btn-${currentIdx}`)) document.getElementById(`btn-${currentIdx}`).classList.add('active');
+        }
+
+        function next() { if(currentIdx < 29) { currentIdx++; render(); } }
+        function prev() { if(currentIdx > 0) { currentIdx--; render(); } }
+
+        buildGrids();
+    </script>
+</body>
+</html>
